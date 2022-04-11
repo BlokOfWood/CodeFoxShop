@@ -11,8 +11,8 @@
             <TabItem Header="Terméklista">
                 <Grid Background="#FFE5E5E5">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="6*"/>
                         <RowDefinition/>
+                        <RowDefinition Height="58"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="200*"/>
@@ -51,35 +51,48 @@
             <TabItem Header="Bevételezés">
                 <Grid x:Name="bevetelezesgrid" Background="#FFE5E5E5">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="1.5*"/>
+                        <ColumnDefinition Width="320"/>
+                        <ColumnDefinition Width="480*"/>
                     </Grid.ColumnDefinitions>
-                    <Button Content="Mentés" HorizontalAlignment="Right" Margin="0,0,20,10" VerticalAlignment="Bottom" Height="50" Width="200" FontSize="20" Click="BevetelezesMentes" Grid.Column="1"/>
-                    <DataGrid x:Name="BevetelezesTablazat" Margin="11,10,10,80" FontSize="16" FontFamily="Bahnschrift" Grid.Column="1"/>
+                    <Button Content="Mentés" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Height="50" Width="200" FontSize="20" Click="BevetelezesMentes" Grid.Column="1"/>
+                    <DataGrid x:Name="BevetelezesTablazat" Margin="11,10,10,80" FontSize="16" FontFamily="Bahnschrift" Grid.Column="1" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Megnevezés" Binding="{Binding Megnevezes}" Width="2*"/>
+                            <DataGridTextColumn Header="Mennyiség" Binding="{Binding Mennyiseg}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
                     <Label Content="Vonalkód" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontSize="18" Height="35" Width="100"/>
                     <TextBox x:Name="BevetelezesVonalkod" HorizontalAlignment="Left" Margin="115,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="193" Height="35" FontSize="21" KeyDown="BevetelezesVonalkodKeyDown" IsEnabled="False" Text=""/>
                     <Label Content="Mennyiség&#xA;" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" FontSize="18" Height="35" Width="100"/>
                     <TextBox x:Name="BevetelezesMennyiseg" HorizontalAlignment="Left" Margin="115,50,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="155" Height="35" FontSize="21" KeyDown="BevetelezesMennyiseg_KeyDown" IsEnabled="False" TextAlignment="Right"/>
-                    <Button Content="Tétel Felvétele" HorizontalAlignment="Center" Margin="0,133,0,0" VerticalAlignment="Top" Height="53" Width="163" FontSize="20" Click="BevetelezesTetelFelvetele"/>
-                    <Button Content="Új Bevételezés" HorizontalAlignment="Left" Margin="20,0,0,10" VerticalAlignment="Bottom" Height="50" Width="200" FontSize="20" Click="BevetelezesUj"/>
+                    <Button Content="Tétel Felvétele" HorizontalAlignment="Center" Margin="0,130,0,0" VerticalAlignment="Top" Height="50" Width="160" FontSize="20" Click="BevetelezesTetelFelvetele"/>
+                    <Button Content="Új Bevételezés" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Height="50" Width="200" FontSize="20" Click="BevetelezesUj"/>
                     <Label Content="db" HorizontalAlignment="Left" Margin="275,50,0,0" VerticalAlignment="Top" Height="35" Width="33" FontSize="18"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Értékesítés">
                 <Grid Background="#FFE5E5E5">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="63*"/>
-                        <ColumnDefinition Width="334*"/>
+                        <ColumnDefinition Width="320"/>
+                        <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <DataGrid x:Name="VasarlasTetelekTablazat" Margin="160,0,0,158" Grid.Column="1" FontSize="16" FontFamily="Bahnschrift"/>
-                    <Label Content="Vonalkód" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontSize="15"/>
-                    <TextBox x:Name="VetelVonalkodBox" HorizontalAlignment="Left" Margin="7,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="134" Height="26" FontSize="15" Grid.Column="1" KeyDown="VasarlasVonalkodBox_KeyDown" IsEnabled="False"/>
-                    <Label Content="Mennyiség&#xA;" HorizontalAlignment="Left" Margin="10,36,0,0" VerticalAlignment="Top" FontSize="15" Height="43"/>
-                    <TextBox x:Name="VasarlasMennyisegBox" HorizontalAlignment="Left" Margin="7,38,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="134" Height="26" FontSize="15" Grid.Column="1" KeyDown="VetelMennyisegBox_KeyDown" IsEnabled="False"/>
-                    <Button Content="Tétel Felvétele" HorizontalAlignment="Left" Margin="73,97,0,0" VerticalAlignment="Top" Height="53" Width="127" FontSize="18" Click="VasarlasTetelFelvetele" Grid.ColumnSpan="2"/>
-                    <Button Content="Vásárlás Befejezése" HorizontalAlignment="Left" Margin="40,196,0,0" VerticalAlignment="Top" Height="52" Width="194" FontSize="18" Grid.ColumnSpan="2" Click="VasarlasBefejezese"/>
-                    <Button Content="Új Vevő" HorizontalAlignment="Left" Margin="194,0,0,10" VerticalAlignment="Bottom" FontSize="30" Click="UjVevo" Grid.Column="1" Width="154" Height="51"/>
-                    <TextBlock x:Name="OsszegKiiras" HorizontalAlignment="Left" Margin="112,0,0,89" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="318" TextAlignment="Center" Height="52" FontSize="30" Grid.Column="1" Text=""/>
+                    <DataGrid x:Name="VasarlasTetelekTablazat" Margin="10,10,10,82" Grid.Column="1" FontSize="16" FontFamily="Bahnschrift" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Megnevezés" Binding="{Binding Megnevezes}" Width="1*"/>
+                            <DataGridTextColumn Header="Bruttó Egységár" Binding="{Binding BruttoEgysegar}" Width="1*"/>
+                            <DataGridTextColumn Header="Mennyiség" Binding="{Binding Mennyiseg}" Width="0.7*"/>
+                            <DataGridTextColumn Header="Összeg Ár" Binding="{Binding OsszegAr}" Width="0.65*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <Label Content="Vonalkód" HorizontalAlignment="Left" Margin="10,12,0,0" VerticalAlignment="Top" FontSize="18" Height="30" Width="100"/>
+                    <TextBox x:Name="VetelVonalkodBox" HorizontalAlignment="Left" Margin="115,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="193" Height="35" FontSize="21" KeyDown="VasarlasVonalkodBox_KeyDown" IsEnabled="False" Grid.ColumnSpan="2"/>
+                    <Label Content="Mennyiség&#xA;" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" FontSize="18" Height="35" Width="100"/>
+                    <TextBox x:Name="VasarlasMennyisegBox" HorizontalAlignment="Left" Margin="115,50,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="155" Height="35" FontSize="21" KeyDown="VetelMennyisegBox_KeyDown" IsEnabled="False" TextAlignment="Right"/>
+                    <Button Content="Tétel Felvétele" HorizontalAlignment="Center" Margin="0,130,0,0" VerticalAlignment="Top" Height="50" Width="160" FontSize="20" Click="VasarlasTetelFelvetele"/>
+                    <Button Content="Vásárlás Befejezése" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Height="50" Width="200" FontSize="20" Click="VasarlasBefejezese" Grid.Column="1"/>
+                    <Button Content="Új Vevő" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" FontSize="20" Click="UjVevo" Width="200" Height="50"/>
+                    <TextBlock x:Name="OsszegKiiras" HorizontalAlignment="Center" Margin="0,0,0,10" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="318" TextAlignment="Center" Height="52" FontSize="30" Text="" Grid.ColumnSpan="2"/>
+                    <Label Content="db" HorizontalAlignment="Left" Margin="275,50,0,0" VerticalAlignment="Top" Height="35" Width="33" FontSize="18"/>
 
                 </Grid>
             </TabItem>

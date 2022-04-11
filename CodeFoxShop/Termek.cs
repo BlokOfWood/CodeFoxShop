@@ -9,7 +9,11 @@ namespace CodeFoxShop
         public string Vonalkod { get; set; }
         public string Megnevezes { get; set; }
         public uint RaktarKeszlet { get; set; }
-        public string BruttoEgysegar { get => BruttoEgysegarErtek.ToString("C", new CultureInfo("hu-HU")); set => BruttoEgysegarErtek = double.Parse(value); }
+        public string BruttoEgysegar 
+        { 
+            get => BruttoEgysegarErtek.ToString("C", new CultureInfo("hu-HU")); 
+            set => BruttoEgysegarErtek = double.Parse(value); 
+        }
 
         public Termek(string sor)
         {

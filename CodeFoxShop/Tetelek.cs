@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ namespace CodeFoxShop
         public double BruttoEgysegar { get => termek.BruttoEgysegarErtek; }
         public uint Mennyiseg { get; set; }
         public double OsszegAr { get => termek.BruttoEgysegarErtek * Mennyiseg; }
+        public string OsszegArString{ get => OsszegAr.ToString("C", new CultureInfo("hu-HU")); }
 
         public VasarlasiTetel(Termek _termek, uint _mennyiseg)
         {

@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 
 namespace CodeFoxShop
 {
     public class Termek
     {
-        public string Vonalkod { get; }
-        public string Megnevezes { get; }
+        public double BruttoEgysegarErtek { get; set; }
+
+        public string Vonalkod { get; set; }
+        public string Megnevezes { get; set; }
         public uint RaktarKeszlet { get; set; }
-        public double BruttoEgysegar { get; }
+        public string BruttoEgysegar { get => BruttoEgysegarErtek.ToString("C", new CultureInfo("hu-HU")); set => BruttoEgysegarErtek = double.Parse(value); }
 
         public Termek(string sor)
         {
@@ -22,7 +20,7 @@ namespace CodeFoxShop
 
             //Ha nincs culture info, a jelenlegit veszi, ami magyar.
             //Ez azért baj, mert magyar szokás a vesszőt használni, pont helyett a tizedes törtekbe és a vesszőt keresi.
-            BruttoEgysegar = double.Parse(bontott[3]);
+            BruttoEgysegarErtek = double.Parse(bontott[3]);
         }
 
         public Termek(string _vonalkod, string _megnevezes, uint _raktarKeszlet, double _bruttoEgysegar)
@@ -30,12 +28,12 @@ namespace CodeFoxShop
             Vonalkod = _vonalkod;
             Megnevezes = _megnevezes;
             RaktarKeszlet = _raktarKeszlet;
-            BruttoEgysegar = _bruttoEgysegar;
+            BruttoEgysegarErtek = _bruttoEgysegar;
         }
 
         public override string ToString()
         {
-            return $"{Vonalkod};{Megnevezes};{RaktarKeszlet};{BruttoEgysegar}";
+            return $"{Vonalkod};{Megnevezes};{RaktarKeszlet};{BruttoEgysegarErtek}";
         }
     }
 }

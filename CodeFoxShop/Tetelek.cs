@@ -9,11 +9,11 @@ namespace CodeFoxShop
 
     public class VasarlasiTetel
     {
-        Termek termek;
+        readonly Termek termek;
         public string Megnevezes { get => termek.Megnevezes; }
-        public double BruttoEgysegar { get => termek.BruttoEgysegar; }
+        public double BruttoEgysegar { get => termek.BruttoEgysegarErtek; }
         public uint Mennyiseg { get; set; }
-        public double OsszegAr { get => termek.BruttoEgysegar * Mennyiseg; }
+        public double OsszegAr { get => termek.BruttoEgysegarErtek * Mennyiseg; }
 
         public VasarlasiTetel(Termek _termek, uint _mennyiseg)
         {
@@ -27,7 +27,7 @@ namespace CodeFoxShop
 
     public class BevetelezesiTetel
     {
-        Termek termek;
+        readonly Termek termek;
         public string Megnevezes { get => termek.Megnevezes; }
         public uint Mennyiseg { get; set; }
 

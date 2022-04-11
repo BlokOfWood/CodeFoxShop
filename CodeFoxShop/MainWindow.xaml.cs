@@ -8,17 +8,15 @@ using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Controls;
 using System;
 
 namespace CodeFoxShop
 {
-
     public partial class MainWindow : Window
     {
-        List<Termek> Termekek = new List<Termek>();
-        List<VasarlasiTetel> VásárlásiTételek = new List<VasarlasiTetel>();
-        List<BevetelezesiTetel> BevetelezesiTetelek = new List<BevetelezesiTetel>();
+        List<Termek> Termekek = new();
+        List<VasarlasiTetel> VásárlásiTételek = new();
+        List<BevetelezesiTetel> BevetelezesiTetelek = new();
         string jelenlegiFajl;
 
         public MainWindow()
@@ -38,7 +36,7 @@ namespace CodeFoxShop
 
         private void TermekImport(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog fajlDialogus = new OpenFileDialog
+            OpenFileDialog fajlDialogus = new()
             {
                 CheckFileExists = true,
                 CheckPathExists = true,
@@ -56,9 +54,13 @@ namespace CodeFoxShop
             }
         }
 
+        /*  ***********  */
+        /*  TERMÉKLISTA  */
+        /*  ***********  */
+
         private void TermekExportalas(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog fajlDialogus = new SaveFileDialog
+            SaveFileDialog fajlDialogus = new()
             {
                 AddExtension = true,
                 DefaultExt = ".csv",
@@ -82,20 +84,40 @@ namespace CodeFoxShop
 
         private void TermekFelvetel(object sender, RoutedEventArgs e)
         {
-            IndexBox.Text = "N/A";
             TabKezelo.SelectedIndex = 1;
         }
 
-        private void TermekModositas(object sender, RoutedEventArgs e)
+        private void TermekekTorlese(object sender, RoutedEventArgs e)
+        {
+            var eredmeny = MessageBox.Show("Biztos törölni akarod ezeket a tárgyakat a leltárból?", "Leltár elem törlés", MessageBoxButton.YesNo);
+
+            if (eredmeny == MessageBoxResult.No)
+                return;
+
+            foreach(var i in TermekTablazat.SelectedItems)
+            {
+                Termekek.Remove((Termek)i);
+            }
+            TermekTablazat.Items.Refresh();
+        }
+
+        private void TermekTablazat_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Delete)
+                TermekekTorlese(null, null);
+        }
+
+        /*  ******************************  */
+        /*  TERMÉK FELVÉTEL VAGY MÓDOSÍTÁS  */
+        /*  ******************************  */
+
+        private void TermekFelvetelMezoUrites(bool meglevoFelhasznalasa = false)
         {
             int kivalasztottIndex = TermekTablazat.SelectedIndex;
-            VonalkodBox.Text = Termekek[kivalasztottIndex].Vonalkod;
-            MegnevezesBox.Text = Termekek[kivalasztottIndex].Megnevezes;
-            KeszletBox.Text = Termekek[kivalasztottIndex].RaktarKeszlet.ToString();
-            EgysegarBox.Text = Termekek[kivalasztottIndex].BruttoEgysegar.ToString(CultureInfo.CreateSpecificCulture("en-US"));
-
-            IndexBox.Text = (TermekTablazat.SelectedIndex + 1).ToString() + ".";
-            TabKezelo.SelectedIndex = 1;
+            VonalkodBox.Text = meglevoFelhasznalasa ? Termekek[kivalasztottIndex].Vonalkod : "";
+            MegnevezesBox.Text = meglevoFelhasznalasa ? Termekek[kivalasztottIndex].Megnevezes : "";
+            KeszletBox.Text = meglevoFelhasznalasa ? Termekek[kivalasztottIndex].RaktarKeszlet.ToString() : "";
+            EgysegarBox.Text = meglevoFelhasznalasa ? Termekek[kivalasztottIndex].BruttoEgysegar.ToString() : "";
         }
 
         private void ListaModositas(object sender, RoutedEventArgs e)
@@ -112,38 +134,42 @@ namespace CodeFoxShop
             if (keszlet == null || egysegar == null)
                 return;
 
-            if (IndexBox.Text == "N/A")
-            {
-                Termekek.Add(new Termek(VonalkodBox.Text, MegnevezesBox.Text, (uint)keszlet, (double)egysegar));
-            }
-            else
-            {
-                int kiválaszottIndex = int.Parse(IndexBox.Text.Trim('.')) - 1;
-                Termekek[kiválaszottIndex] = new Termek(VonalkodBox.Text, MegnevezesBox.Text, (uint)keszlet, (double)egysegar);
-                IndexBox.Text = "N/A";
-            }
+            Termekek.Add(new Termek(VonalkodBox.Text, MegnevezesBox.Text, (uint)keszlet, (double)egysegar));
 
-            VonalkodBox.Text = "";
-            MegnevezesBox.Text = "";
-            KeszletBox.Text = "";
-            EgysegarBox.Text = "";
+            TermekFelvetelMezoUrites();
             TermekTablazat.Items.Refresh();
 
             TabKezelo.SelectedIndex = 0;
         }
 
-        private void UjVevo(object sender, RoutedEventArgs e)
-        {
-            VásárlásiTételek = new List<VasarlasiTetel>();
-            VásárlásiTételek.Clear();
-            VasarlasTetelekTablazat.ItemsSource = VásárlásiTételek;
-            VetelVonalkodBox.IsEnabled = true;
-            VetelMennyisegBox.IsEnabled = true;
+        /*  ******************************  */
+        /*              VÁSÁRLÁS            */
+        /*  ******************************  */
 
+
+        private void VasarlasMezoUrites(bool mezokEngedelyezve = true, bool tablazatForrasNullozva = false, bool osszegUres = false)
+        {
+            VasarlasTetelekTablazat.Items.Refresh();
 
             VetelVonalkodBox.Text = "";
-            VetelMennyisegBox.Text = "";
-            OsszegKiiras.Text = "0 Ft";
+            VasarlasMennyisegBox.Text = "";
+            OsszegKiiras.Text = osszegUres ? "" : "0 Ft";
+
+            VetelVonalkodBox.IsEnabled = mezokEngedelyezve;
+            VasarlasMennyisegBox.IsEnabled = mezokEngedelyezve;
+
+            if (tablazatForrasNullozva)
+                VasarlasTetelekTablazat.ItemsSource = null;
+            else
+                VasarlasTetelekTablazat.ItemsSource = VásárlásiTételek;
+        }
+
+        private void UjVevo(object sender, RoutedEventArgs e)
+        {
+            VásárlásiTételek.Clear();
+            VasarlasTetelekTablazat.ItemsSource = VásárlásiTételek;
+
+            VasarlasMezoUrites();
         }
 
         private void VasarlasTetelFelvetele(object sender, RoutedEventArgs e)
@@ -155,7 +181,7 @@ namespace CodeFoxShop
                 return;
             }
 
-            Termek kiválaszottTermék = Termekek.Find(x => x.Vonalkod == VetelVonalkodBox.Text);
+            Termek? kiválaszottTermék = Termekek.Find(x => x.Vonalkod == VetelVonalkodBox.Text);
             if (kiválaszottTermék == null)
             {
                 MessageBox.Show("Nincs ilyen termék!", "Felvételi hiba", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -163,79 +189,45 @@ namespace CodeFoxShop
                 return;
             }
 
+            uint? mennyiseg = 1;
+            if (VasarlasMennyisegBox.Text != "")
+            {
+                mennyiseg = MezoEllenorzes(VasarlasMennyisegBox.Text, Parserek.UINT, "mennyiség", "Vásárlás tétel felvétel hiba");
+                if (mennyiseg == null) return;
+            }
+
             int MeglévőIndex = VásárlásiTételek.FindIndex(x => x.Ugyanaz(kiválaszottTermék));
+
             if (MeglévőIndex != -1)
-            {
-                if (VetelMennyisegBox.Text == "")
-                {
-                    VásárlásiTételek[MeglévőIndex].Mennyiseg += 1;
-                }
-                else
-                {
-
-                    uint mennyiseg = 0;
-                    if (!uint.TryParse(VetelMennyisegBox.Text, out mennyiseg))
-                    {
-                        MessageBox.Show("Hibás mennyiség szám!", "Termék felvételi hiba", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
-                    }
-
-                    VásárlásiTételek[MeglévőIndex].Mennyiseg += mennyiseg;
-                }
-            }
+                VásárlásiTételek[MeglévőIndex].Mennyiseg += (uint)mennyiseg;
             else
-            {
-                if (VetelMennyisegBox.Text == "")
-                {
-                    VásárlásiTételek.Add(new VasarlasiTetel(kiválaszottTermék, 1));
-                }
-                else
-                {
+                VásárlásiTételek.Add(new VasarlasiTetel(kiválaszottTermék, (uint)mennyiseg));
 
-                    uint mennyiseg = 0;
-                    if (!uint.TryParse(VetelMennyisegBox.Text, out mennyiseg))
-                    {
-                        MessageBox.Show("Hibás mennyiség szám!", "Termék felvételi hiba", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
-                    }
-                    if (VetelMennyisegBox.Text != "")
-                        VásárlásiTételek.Add(new VasarlasiTetel(kiválaszottTermék, mennyiseg));
-                }
-            }
-
-            VasarlasTetelekTablazat.Items.Refresh();
-
+            VasarlasMezoUrites();
             OsszegKiiras.Text = VásárlásiTételek.Sum(x => x.OsszegAr) + " Ft";
-
-            VetelVonalkodBox.Text = "";
-            VetelMennyisegBox.Text = "";
         }
 
-        private void VetelVonalkodBox_KeyDown(object sender, KeyEventArgs e)
+        private void VasarlasVonalkodBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                VetelMennyisegBox.Focus();
-                VetelMennyisegBox.Text = "1";
-                VetelMennyisegBox.SelectAll();
+                VasarlasMennyisegBox.Focus();
+                VasarlasMennyisegBox.Text = "1";
+                VasarlasMennyisegBox.SelectAll();
             }
         }
 
         private void VasarlasBefejezese(object sender, RoutedEventArgs e)
         {
-            VásárlásiTételek.ForEach(x =>
+            foreach (VasarlasiTetel vasarlasiTetel in VásárlásiTételek)
             {
-                int MeglévőIndex = Termekek.FindIndex(y => x.Ugyanaz(y));
-                Termekek[MeglévőIndex].RaktarKeszlet -= x.Mennyiseg;
-                TermekTablazat.Items.Refresh();
-            });
+                int LeltarIndex = Termekek.FindIndex(y => vasarlasiTetel.Ugyanaz(y));
 
-            VetelVonalkodBox.IsEnabled = false;
-            VetelMennyisegBox.IsEnabled = false;
-            VasarlasTetelekTablazat.ItemsSource = null;
-            VetelVonalkodBox.Text = "";
-            VetelMennyisegBox.Text = "";
-            OsszegKiiras.Text = "";
+                Termekek[LeltarIndex].RaktarKeszlet -= vasarlasiTetel.Mennyiseg;
+                TermekTablazat.Items.Refresh();
+            }
+
+            VasarlasMezoUrites(false, true, true);
         }
 
         private void VetelMennyisegBox_KeyDown(object sender, KeyEventArgs e)
@@ -247,7 +239,11 @@ namespace CodeFoxShop
             }
         }
 
-        private void BevetelezesMezoUrites(bool mezokEngedelyezve = true, bool tablazatForrasNullozva = false)
+        /*  ******************************  */
+        /*             BEVÉTELEZÉS          */
+        /*  ******************************  */
+
+        private void BevetelezesMezoUrites(bool listaUritve = false, bool mezokEngedelyezve = true, bool tablazatForrasNullozva = false)
         {
             BevetelezesTablazat.Items.Refresh();
 
@@ -257,8 +253,13 @@ namespace CodeFoxShop
             BevetelezesVonalkod.IsEnabled = mezokEngedelyezve;
             BevetelezesMennyiseg.IsEnabled = mezokEngedelyezve;
 
-            if(tablazatForrasNullozva)
+            if (tablazatForrasNullozva)
                 BevetelezesTablazat.ItemsSource = null;
+            else
+                BevetelezesTablazat.ItemsSource = BevetelezesiTetelek;
+
+            if (listaUritve)
+                BevetelezesiTetelek.Clear();
         }
 
         private void BevetelezesTetelFelvetele(object sender, RoutedEventArgs e)
@@ -272,17 +273,15 @@ namespace CodeFoxShop
             Termek? kivalasztottTermek = Termekek.Find(x => x.Vonalkod == BevetelezesVonalkod.Text);
             if (kivalasztottTermek == null)
             {
-                MessageBox.Show("Nincs ilyen termék!", "Bevételezés hiba", MessageBoxButton.OK, MessageBoxImage.Error);
+                ErrorUzenet("Nincs ilyen termék!", "Bevételezés hiba");
                 BevetelezesVonalkod.Text = "";
                 return;
             }
 
             uint? mennyiseg = MezoEllenorzes(BevetelezesMennyiseg.Text, Parserek.UINT, "mennyiség", "Termék felvételi hiba");
-
             if (mennyiseg == null) return;
 
             int MeglevoIndex = BevetelezesiTetelek.FindIndex(x => x.Ugyanaz(kivalasztottTermek));
-
             if (MeglevoIndex == -1)
                 BevetelezesiTetelek.Add(new BevetelezesiTetel(kivalasztottTermek, (uint)mennyiseg));
             else
@@ -293,30 +292,22 @@ namespace CodeFoxShop
 
         private void BevetelezesMentes(object sender, RoutedEventArgs e)
         {
-            BevetelezesiTetelek.ForEach(x =>
-            {
-                int MeglévőIndex = Termekek.FindIndex(y => x.Ugyanaz(y));
-                Termekek[MeglévőIndex].RaktarKeszlet += x.Mennyiseg;
+            foreach(BevetelezesiTetel bevetelezesiTetel in BevetelezesiTetelek)
+            { 
+                int LeltarIndex = Termekek.FindIndex(y => bevetelezesiTetel.Ugyanaz(y));
+                Termekek[LeltarIndex].RaktarKeszlet += bevetelezesiTetel.Mennyiseg;
                 TermekTablazat.Items.Refresh();
-            });
+            }
 
-            BevetelezesMezoUrites(false, true);
+            BevetelezesMezoUrites(false, false, true);
         }
 
-        private void BevetelezesMegse(object sender, RoutedEventArgs e)
-        {
-            BevetelezesiTetelek.Clear();
+        private void BevetelezesMegse(object sender, RoutedEventArgs e) =>
+            BevetelezesMezoUrites(true, false, true);
+        
 
-            BevetelezesMezoUrites(false, true);
-        }
-
-        private void BevetelezesUj(object sender, RoutedEventArgs e)
-        {
-            BevetelezesiTetelek.Clear();
-            BevetelezesTablazat.ItemsSource = BevetelezesiTetelek;
-
-            BevetelezesMezoUrites();
-        }
+        private void BevetelezesUj(object sender, RoutedEventArgs e) =>
+            BevetelezesMezoUrites(true);
 
         private void BevetelezesVonalkodKeyDown(object sender, KeyEventArgs e)
         {
@@ -338,39 +329,29 @@ namespace CodeFoxShop
             }
         }
 
-        public static T? MezoEllenorzes<T>(string ellenorzottSzoveg, Func<string, (bool sikeresség, T eredmény)> parseFunction, string mezoNeve, string errorCím) where T : struct
+        /*  ******************************  */
+        /*          SEGÉD METÓDUSOK         */
+        /*  ******************************  */
+
+        public static T? MezoEllenorzes<T>(string ellenorzottSzoveg, Func<string, (bool sikeresség, T eredmény)> parseFunction, string mezoNeve, string errorCim) where T : struct
         {
             if (ellenorzottSzoveg.Length == 0)
             {
-                MessageBox.Show($"Nincs megadva {mezoNeve}!", errorCím, MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Nincs megadva {mezoNeve}!", errorCim, MessageBoxButton.OK, MessageBoxImage.Error);
                 return null;
             }
-            var parseEredmény = parseFunction(ellenorzottSzoveg);
-            if (!parseEredmény.sikeresség)
+
+            var (sikeresség, eredmény) = parseFunction(ellenorzottSzoveg);
+            if (!sikeresség)
             {
-                MessageBox.Show($"Hibásan megadott {mezoNeve} érték!", errorCím, MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Hibásan megadott {mezoNeve} érték!", errorCim, MessageBoxButton.OK, MessageBoxImage.Error);
                 return null;
             }
 
-            return parseEredmény.eredmény;
+            return eredmény;
         }
 
-        public void ErrorUzenet(string uzenet, string ablakCim) =>
+        public static void ErrorUzenet(string uzenet, string ablakCim) =>
             MessageBox.Show(uzenet, ablakCim, MessageBoxButton.OK, MessageBoxImage.Error);
-    }
-
-    public static class Parserek
-    {
-        public static (bool, uint) UINT(string s)
-        {
-            bool eredmény = uint.TryParse(s, out uint a);
-            return (eredmény, a);
-        }
-
-        public static (bool, double) DOUBLE(string s)
-        {
-            bool eredmény = double.TryParse(s, out double a);
-            return (eredmény, a);
-        }
     }
 }

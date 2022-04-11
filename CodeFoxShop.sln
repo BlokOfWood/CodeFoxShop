@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32126.315
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeFoxShop", "CodeFoxShop\CodeFoxShop.csproj", "{37467A48-EC0A-48F2-89DB-1188FD38F147}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{37467A48-EC0A-48F2-89DB-1188FD38F147}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37467A48-EC0A-48F2-89DB-1188FD38F147}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37467A48-EC0A-48F2-89DB-1188FD38F147}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37467A48-EC0A-48F2-89DB-1188FD38F147}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0E2BFDEC-51BD-4FCB-91FC-41BC8F3CF990}
+	EndGlobalSection
+EndGlobal

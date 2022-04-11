@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CodeFoxShop"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" MinWidth="630" MinHeight="380">
+        Title="CodeFoxShop" Height="450" Width="800" MinWidth="630" MinHeight="380">
     <Grid>
         <TabControl Grid.RowSpan="2" x:Name="TabKezelo">
             <TabItem Header="Terméklista">
@@ -20,7 +20,7 @@
                         <ColumnDefinition Width="200*"/>
                         <ColumnDefinition Width="200*"/>
                     </Grid.ColumnDefinitions>
-                    <DataGrid x:Name="TermekTablazat" Grid.Row="0" Margin="10,10,10,0" Grid.ColumnSpan="4" AutoGenerateColumns="False" FontSize="16" FontFamily="Bahnschrift" ColumnWidth="Auto" KeyDown="TermekTablazat_KeyDown">
+                    <DataGrid x:Name="TermekTablazat" Grid.Row="0" Margin="10,10,10,0" Grid.ColumnSpan="4" AutoGenerateColumns="False" FontSize="16" FontFamily="Bahnschrift" ColumnWidth="Auto" PreviewKeyDown="TermekTablazat_KeyDown">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Vonalkód" Binding="{Binding Vonalkod}" Width="12*"/>
                             <DataGridTextColumn Header="Megnevezés" Binding="{Binding Megnevezes}" Width="20*"/>

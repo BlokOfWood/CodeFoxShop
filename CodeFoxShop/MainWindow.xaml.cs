@@ -103,8 +103,11 @@ namespace CodeFoxShop
 
         private void TermekTablazat_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Delete)
-                TermekekTorlese(null, null);
+            if (e.Key != Key.Delete)
+                return;
+            e.Handled = true;
+
+            TermekekTorlese(null, null);
         }
 
         /*  ******************************  */
@@ -128,8 +131,8 @@ namespace CodeFoxShop
                 return;
             }
 
-            uint? keszlet = MezoEllenorzes(KeszletBox.Text, Parserek.UINT, "készlet", "Lista módosítási hiba");
-            double? egysegar = MezoEllenorzes(EgysegarBox.Text, Parserek.DOUBLE, "egységár", "Lista módosítási hiba");
+            uint? keszlet = MezoEllenorzes(KeszletBox.Text, Parserek.UINT, "készlet");
+            double? egysegar = MezoEllenorzes(EgysegarBox.Text, Parserek.DOUBLE, "egységár");
             
             if (keszlet == null || egysegar == null)
                 return;
@@ -192,7 +195,7 @@ namespace CodeFoxShop
             uint? mennyiseg = 1;
             if (VasarlasMennyisegBox.Text != "")
             {
-                mennyiseg = MezoEllenorzes(VasarlasMennyisegBox.Text, Parserek.UINT, "mennyiség", "Vásárlás tétel felvétel hiba");
+                mennyiseg = MezoEllenorzes(VasarlasMennyisegBox.Text, Parserek.UINT, "mennyiség");
                 if (mennyiseg == null) return;
             }
 
@@ -278,7 +281,7 @@ namespace CodeFoxShop
                 return;
             }
 
-            uint? mennyiseg = MezoEllenorzes(BevetelezesMennyiseg.Text, Parserek.UINT, "mennyiség", "Termék felvételi hiba");
+            uint? mennyiseg = MezoEllenorzes(BevetelezesMennyiseg.Text, Parserek.UINT, "mennyiség");
             if (mennyiseg == null) return;
 
             int MeglevoIndex = BevetelezesiTetelek.FindIndex(x => x.Ugyanaz(kivalasztottTermek));
@@ -333,18 +336,18 @@ namespace CodeFoxShop
         /*          SEGÉD METÓDUSOK         */
         /*  ******************************  */
 
-        public static T? MezoEllenorzes<T>(string ellenorzottSzoveg, Func<string, (bool sikeresség, T eredmény)> parseFunction, string mezoNeve, string errorCim) where T : struct
+        public static T? MezoEllenorzes<T>(string ellenorzottSzoveg, Func<string, (bool sikeresség, T eredmény)> parseFunction, string mezoNeve) where T : struct
         {
             if (ellenorzottSzoveg.Length == 0)
             {
-                MessageBox.Show($"Nincs megadva {mezoNeve}!", errorCim, MessageBoxButton.OK, MessageBoxImage.Error);
+                ErrorUzenet($"Nincs megadva {mezoNeve}!", "Beviteli hiba");
                 return null;
             }
 
             var (sikeresség, eredmény) = parseFunction(ellenorzottSzoveg);
             if (!sikeresség)
             {
-                MessageBox.Show($"Hibásan megadott {mezoNeve} érték!", errorCim, MessageBoxButton.OK, MessageBoxImage.Error);
+                ErrorUzenet($"Hibásan megadott {mezoNeve} érték!", "Beviteli hiba");
                 return null;
             }
 

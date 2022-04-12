@@ -82,7 +82,7 @@ namespace CodeFoxShop
             }
         }
 
-        private void TermekFelvetel(object sender, RoutedEventArgs e)
+        private void TermekFelvetelGombNyomas(object sender, RoutedEventArgs e)
         {
             TabKezelo.SelectedIndex = 1;
         }
@@ -111,19 +111,19 @@ namespace CodeFoxShop
         }
 
         /*  ******************************  */
-        /*  TERMÉK FELVÉTEL VAGY MÓDOSÍTÁS  */
+        /*          TERMÉK FELVÉTEL         */
         /*  ******************************  */
 
-        private void TermekFelvetelMezoUrites(bool meglevoFelhasznalasa = false)
+        private void TermekFelvetelMezoUrites()
         {
             int kivalasztottIndex = TermekTablazat.SelectedIndex;
-            VonalkodBox.Text = meglevoFelhasznalasa ? Termekek[kivalasztottIndex].Vonalkod : "";
-            MegnevezesBox.Text = meglevoFelhasznalasa ? Termekek[kivalasztottIndex].Megnevezes : "";
-            KeszletBox.Text = meglevoFelhasznalasa ? Termekek[kivalasztottIndex].RaktarKeszlet.ToString() : "";
-            EgysegarBox.Text = meglevoFelhasznalasa ? Termekek[kivalasztottIndex].BruttoEgysegar.ToString() : "";
+            VonalkodBox.Text = "";
+            MegnevezesBox.Text = "";
+            KeszletBox.Text = "";
+            EgysegarBox.Text = "";
         }
 
-        private void ListaModositas(object sender, RoutedEventArgs e)
+        private void TermekFelvetele(object sender, RoutedEventArgs e)
         {
             if (VonalkodBox.Text == "" || MegnevezesBox.Text == "")
             {
@@ -138,11 +138,40 @@ namespace CodeFoxShop
                 return;
 
             Termekek.Add(new Termek(VonalkodBox.Text, MegnevezesBox.Text, (uint)keszlet, (double)egysegar));
-
-            TermekFelvetelMezoUrites();
             TermekTablazat.Items.Refresh();
 
             TabKezelo.SelectedIndex = 0;
+            TermekFelvetelMezoUrites();
+        }
+
+        private void VonalkodBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Enter)
+                return;
+            MegnevezesBox.Focus();
+        }
+
+        private void MegnevezesBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Enter)
+                return;
+            KeszletBox.Focus();
+        }
+
+        private void KeszletBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Enter)
+                return;
+            EgysegarBox.Focus();
+        }
+
+        private void EgysegarBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Enter)
+                return;
+            e.Handled = true;
+            
+            TermekFelvetele(null,null);
         }
 
         /*  ******************************  */
